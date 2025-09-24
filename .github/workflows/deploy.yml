@@ -29,7 +29,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          PATH_PREFIX: "/"  # set to "/australia-blog/" if deploying under a project path
+          PATH_PREFIX: "/australia-blog/"
 
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -43,5 +43,3 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          cname: australia.joelsinnott.com
