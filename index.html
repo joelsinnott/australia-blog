@@ -1,0 +1,17 @@
+---
+layout: layout.html
+title: Joel in Australia
+---
+<section class="space-y-4">
+  <ul class="not-prose list-none pl-0 divide-y divide-base-150">
+    {% assign posts = collections.post | sort: 'date' | reverse %}
+    {% for post in posts %}
+      <li class="py-3">
+        <a class="text-blue hover:text-blue-light font-medium" href="{{ post.url }}">{{ post.data.title }}</a>
+        {% if post.date %}
+          <span class="text-sm text-base-600">— {{ post.date | date: "%d.%m.%Y" }}</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</section>

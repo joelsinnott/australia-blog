@@ -1,0 +1,24 @@
+{
+  "name": "australia-blog",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run css:build && eleventy",
+    "dev": "eleventy --serve & npm run css:dev",
+    "css:build": "./node_modules/.bin/tailwindcss -i ./styles/tailwind.css -o ./assets/styles.css --minify --content ./index.html,./posts/**/*.{md,html},./_includes/**/*.{html,liquid,njk}",
+    "css:dev": "./node_modules/.bin/tailwindcss -i ./styles/tailwind.css -o ./assets/styles.css --watch --content ./index.html,./posts/**/*.{md,html},./_includes/**/*.{html,liquid,njk}"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2",
+    "@tailwindcss/typography": "^0.5.18",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
+  }
+}
