@@ -26,9 +26,10 @@ jobs:
           cache: npm
 
       - run: npm ci
-      # If you don't have package.json scripts, use: npx @11ty/eleventy
-      - run: npm run build
-        # expects "build": "eleventy" or "@11ty/eleventy" in package.json
+      - name: Build
+        run: npm run build
+        env:
+          PATH_PREFIX: "/"  # set to "/australia-blog/" if deploying under a project path
 
       - uses: actions/upload-pages-artifact@v3
         with:

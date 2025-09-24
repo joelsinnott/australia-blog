@@ -6,8 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run css:build && eleventy",
     "dev": "eleventy --serve & npm run css:dev",
-    "css:build": "./node_modules/.bin/tailwindcss -i ./styles/tailwind.css -o ./assets/styles.css --minify --content ./index.html,./posts/**/*.{md,html},./_includes/**/*.{html,liquid,njk}",
-    "css:dev": "./node_modules/.bin/tailwindcss -i ./styles/tailwind.css -o ./assets/styles.css --watch --content ./index.html,./posts/**/*.{md,html},./_includes/**/*.{html,liquid,njk}"
+    "css:build": "tailwindcss -i ./styles/tailwind.css -o ./assets/styles.css --minify",
+    "css:dev": "tailwindcss -i ./styles/tailwind.css -o ./assets/styles.css --watch"
   },
   "keywords": [],
   "author": "",
