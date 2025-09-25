@@ -13,7 +13,7 @@
     </header>
     <main class="max-w-3xl mx-auto px-4 prose [&_p]:!leading-[1.5] [&_li]:!leading-[1.5]">
         <section class="space-y-4">
-  <div id="random-figs" class="not-prose grid grid-cols-4 gap-2"></div>
+  <div id="random-figs" class="not-prose grid grid-cols-3 xs:grid-cols-4 gap-2"></div>
 
   
   <div class="not-prose flex flex-wrap gap-2">
@@ -62,8 +62,9 @@
       for (const f of all) {
         if (f && f.src && !seen.has(f.src)) { seen.add(f.src); figs.push(f); }
       }
-      // pick up to 3 unique random images (reserve last slot for All photos tile)
-      const count = Math.min(3, figs.length);
+      // pick 2 images on mobile (<600px), 3 on larger screens (reserve last slot for All photos)
+      const isMobile = window.matchMedia('(max-width: 600px)').matches;
+      const count = Math.min(isMobile ? 2 : 3, figs.length);
       const pick = [];
       const used = new Set();
       while (pick.length < count) {
