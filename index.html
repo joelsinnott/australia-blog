@@ -17,7 +17,7 @@ title: Joel in Australia
   <ul class="not-prose list-none pl-0 divide-y divide-base-150">
     {% for post in posts %}
       <li class="py-3">
-        <a class="text-blue hover:text-blue-light font-medium" href="{{ post.url | url }}">{{ post.data.title }}</a>
+        <a class="block text-blue hover:text-blue-light font-medium" href="{{ post.url | url }}">{{ post.data.title }}</a>
         {% if post.date %}
           <span class="text-sm text-base-600">– {{ post.date | date: "%d.%m.%Y" }}</span>
         {% endif %}
