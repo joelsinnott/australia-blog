@@ -3,8 +3,16 @@ layout: layout.html
 title: Joel in Australia
 ---
 <section class="space-y-4">
+  {% if collections.allTags and collections.allTags.size > 0 %}
+  <div class="not-prose flex flex-wrap gap-2">
+    {% for tag in collections.allTags %}
+      <a href="{{ '/tag/' | append: tag | append: '/' | url }}" class="px-2 py-1 rounded bg-base-100 text-base-800 text-sm">#{{ tag }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% assign posts = collections.post | sort: 'date' | reverse %}
   <ul class="not-prose list-none pl-0 divide-y divide-base-150">
-    {% assign posts = collections.post | sort: 'date' | reverse %}
     {% for post in posts %}
       <li class="py-3">
         <a class="text-blue hover:text-blue-light font-medium" href="{{ post.url | url }}">{{ post.data.title }}</a>
