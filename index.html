@@ -3,6 +3,8 @@ layout: layout.html
 title: Joel in Australia
 ---
 <section class="space-y-4">
+  <div id="random-figs" class="not-prose grid grid-cols-4 gap-2"></div>
+
   {% if collections.allTags and collections.allTags.size > 0 %}
   <div class="not-prose flex flex-wrap gap-2">
     {% for tag in collections.allTags %}
@@ -17,9 +19,82 @@ title: Joel in Australia
       <li class="py-3">
         <a class="text-blue hover:text-blue-light font-medium" href="{{ post.url | url }}">{{ post.data.title }}</a>
         {% if post.date %}
-          <span class="text-sm text-base-600">— {{ post.date | date: "%d.%m.%Y" }}</span>
+          <span class="text-sm text-base-600">– {{ post.date | date: "%d.%m.%Y" }}</span>
         {% endif %}
       </li>
     {% endfor %}
   </ul>
 </section>
+
+<script>
+  (async function(){
+    try {
+      const res = await fetch('{{ '/figures.json' | url }}');
+      if(!res.ok) return;
+      const all = await res.json();
+      if(!Array.isArray(all) || all.length === 0) return;
+      // de-duplicate by src first
+      const seen = new Set();
+      const figs = [];
+      for (const f of all) {
+        if (f && f.src && !seen.has(f.src)) { seen.add(f.src); figs.push(f); }
+      }
+      // pick up to 4 unique random images
+      const count = Math.min(4, figs.length);
+      const pick = [];
+      const used = new Set();
+      while (pick.length < count) {
+        const i = Math.floor(Math.random() * figs.length);
+        if (!used.has(i)) { used.add(i); pick.push(figs[i]); }
+      }
+      const wrap = document.getElementById('random-figs');
+      const frag = document.createDocumentFragment();
+      pick.forEach(f => {
+        const a = document.createElement('a');
+        a.href = f.src;
+        a.className = 'block';
+        a.setAttribute('data-caption', f.caption || '');
+        a.setAttribute('data-pageurl', f.pageUrl || '#');
+        const img = document.createElement('img');
+        img.src = f.src;
+        img.alt = f.alt || '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.className = 'w-full object-cover rounded';
+        img.style.aspectRatio = '1 / 1';
+        a.appendChild(img);
+        frag.appendChild(a);
+      });
+      wrap.appendChild(frag);
+
+      // lightbox modal
+      const modal = document.createElement('div');
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:50;padding:1rem;';
+      modal.innerHTML = '<div class="max-w-4xl w-full" style="max-height:90vh;display:flex;justify-content:center;align-items:center;pointer-events:none;">\
+<div id="lb-box" style="display:inline-flex;flex-direction:column;align-items:stretch;width:fit-content;max-width:90vw;pointer-events:auto;">\
+  <img id="lb-img" alt="" style="display:block;height:auto;width:auto;max-width:90vw;max-height:80vh;margin:0 auto;object-fit:contain;">\
+  <div class="flex justify-between items-center mt-2" style="width:100%">\
+    <div id="lb-cap" class="text-base-100 text-sm"></div>\
+    <a id="lb-link" class="text-blue hover:text-blue-light text-sm" href="#">Open post →</a>\
+  </div>\
+</div>\
+</div>';
+      document.body.appendChild(modal);
+      const lbImg = modal.querySelector('#lb-img');
+      const lbCap = modal.querySelector('#lb-cap');
+      const lbLink = modal.querySelector('#lb-link');
+      function open(src, cap, pageUrl){
+        lbImg.src = src; lbCap.textContent = cap || ''; lbLink.href = pageUrl || '#'; modal.style.display = 'flex';
+      }
+      function close(){ modal.style.display = 'none'; lbImg.src=''; }
+      modal.addEventListener('click', (e)=>{ const box = document.getElementById('lb-box'); if(!box || !box.contains(e.target)) close(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+      wrap.addEventListener('click', (e)=>{
+        const a = e.target.closest('a');
+        if(!a) return;
+        e.preventDefault();
+        open(a.href, a.getAttribute('data-caption')||'', a.getAttribute('data-pageurl')||'#');
+      });
+    } catch(_){}
+  })();
+</script>

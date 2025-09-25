@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+
+const collectedFigures = [];
+
 export default function(eleventyConfig) {
   const urlFilter = (path) => eleventyConfig.getFilter("url")(path);
   eleventyConfig.addPassthroughCopy({ "assets": "assets" });
@@ -10,12 +14,21 @@ export default function(eleventyConfig) {
     });
     return Array.from(set).sort();
   });
-  eleventyConfig.addShortcode("figure", (src, alt = "", caption = "") => {
+  eleventyConfig.addShortcode("figure", function(src, alt = "", caption = "") {
+    const imgSrc = urlFilter(src);
+    const pageUrl = this && this.page && this.page.url ? urlFilter(this.page.url) : "";
+    collectedFigures.push({ src: imgSrc, alt, caption, pageUrl });
     return `
   <figure class="my-6">
-    <img src="${urlFilter(src)}" alt="${alt}" class="rounded">
+    <img src="${imgSrc}" alt="${alt}" class="rounded-none">
     ${caption ? `<figcaption class="mt-2 text-sm text-base-600">${caption}</figcaption>` : ""}
   </figure>`;
+  });
+
+  eleventyConfig.on('eleventy.after', () => {
+    try {
+      fs.writeFileSync('./_site/figures.json', JSON.stringify(collectedFigures));
+    } catch (_) {}
   });
   return {
     dir: {

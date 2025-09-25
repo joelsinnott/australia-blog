@@ -7,3 +7,5 @@ So this is my first post **wow so sick!** I wonder how nice it is to read text o
 
 {% figure "/assets/img/adelaide/mutoco.JPG", "My former coworkers at mutoco", "My former coworkers at mutoco" %}
 
+{% figure "/assets/img/img-5.jpg", "Lorem ipsum dolor", "Lorem ipsum dolor" %}
+{% figure "/assets/img/img-6.jpg", "Lorem ipsum dolor", "Lorem ipsum dolor" %}

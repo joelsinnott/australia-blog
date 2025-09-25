@@ -1,0 +1,9 @@
+{
+	"Insert blog image": {
+	  "prefix": ".img",
+	  "body": [
+		"{% figure \"/assets/img/${1:img-2.jpg}\", \"${2:Alt text}\", \"${3:Caption}\" %}"
+	  ],
+	  "description": "Insert blog image snippet"
+	}
+  }
