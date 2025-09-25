@@ -1,0 +1,70 @@
+---
+title: Photos
+layout: layout.html
+permalink: "/photos/"
+---
+
+<section class="space-y-4">
+  <div id="photos-feed" class="not-prose flex flex-col gap-6"></div>
+  <div class="not-prose flex justify-center">
+    <button id="load-more" class="px-3 py-2 rounded bg-base-100 hover:bg-base-150 text-base-800 text-sm">Load more</button>
+  </div>
+</section>
+
+<script>
+(async function(){
+  try {
+    const res = await fetch('{{ '/figures.json' | url }}');
+    if(!res.ok) return;
+    const all = await res.json();
+    if(!Array.isArray(all) || all.length === 0) return;
+    // newest first, then de-duplicate by src
+    const seen = new Set();
+    const items = [];
+    for (const f of all.slice().reverse()) {
+      if (f && f.src && !seen.has(f.src)) { seen.add(f.src); items.push(f); }
+    }
+    const pageSize = 12;
+    let idx = 0;
+    const grid = document.getElementById('photos-feed');
+    const btn = document.getElementById('load-more');
+    function renderChunk(){
+      const frag = document.createDocumentFragment();
+      for(let i=0;i<pageSize && idx < items.length;i++, idx++){
+        const f = items[idx];
+        const card = document.createElement('article');
+        card.className = 'flex flex-col gap-2';
+        const a = document.createElement('a');
+        a.href = f.src;
+        a.target = '_blank';
+        const img = document.createElement('img');
+        img.src = f.src;
+        img.alt = f.alt || '';
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.className = 'w-full h-auto';
+        a.appendChild(img);
+        const meta = document.createElement('div');
+        meta.className = 'text-sm text-base-600 flex justify-between items-center';
+        const cap = document.createElement('div');
+        cap.textContent = f.caption || '';
+        const link = document.createElement('a');
+        link.href = f.pageUrl || '#';
+        link.className = 'text-blue hover:text-blue-light';
+        link.textContent = 'Open post →';
+        meta.appendChild(cap);
+        meta.appendChild(link);
+        card.appendChild(a);
+        card.appendChild(meta);
+        frag.appendChild(card);
+      }
+      grid.appendChild(frag);
+      if(idx >= items.length) btn.style.display = 'none';
+    }
+    btn.addEventListener('click', renderChunk);
+    renderChunk();
+  } catch(_){ }
+})();
+</script>
+
+

@@ -1,5 +1,5 @@
 ---
-title: First post
+title: Brothas, this is my first fukken post
 date: 2025-09-01
 tags: [adelaide, people]
 ---

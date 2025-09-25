@@ -1,12 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./index.html",
-    "./posts/**/*.{md,html}",
-    "./_includes/**/*.{html,liquid,njk}"
+    "./**/*.{html,liquid,njk,md}"
   ],
   theme: {
     extend: {
+      screens: {
+        xs: '600px'
+      },
       colors: {
         base: {
           black: '#100F0F',

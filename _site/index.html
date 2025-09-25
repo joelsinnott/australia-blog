@@ -13,7 +13,7 @@
     </header>
     <main class="max-w-3xl mx-auto px-4 prose [&_p]:!leading-[1.5] [&_li]:!leading-[1.5]">
         <section class="space-y-4">
-  <div id="random-figs" class="not-prose grid grid-cols-4 gap-2"></div>
+  <div id="random-figs" class="not-prose grid grid-cols-2 xs:grid-cols-4 gap-2"></div>
 
   
   <div class="not-prose flex flex-wrap gap-2">
@@ -35,14 +35,14 @@
       <li class="py-3">
         <a class="block text-blue hover:text-blue-light font-medium" href="/posts/post-2/">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</a>
         
-          <span class="text-sm text-base-600">– 15.09.2025</span>
+          <span class="text-sm text-base-600"> 15.09.2025</span>
         
       </li>
     
       <li class="py-3">
-        <a class="block text-blue hover:text-blue-light font-medium" href="/posts/post-1/">First post</a>
+        <a class="block text-blue hover:text-blue-light font-medium" href="/posts/post-1/">Brothas, this is my first fukken post</a>
         
-          <span class="text-sm text-base-600">– 01.09.2025</span>
+          <span class="text-sm text-base-600"> 01.09.2025</span>
         
       </li>
     
@@ -62,8 +62,8 @@
       for (const f of all) {
         if (f && f.src && !seen.has(f.src)) { seen.add(f.src); figs.push(f); }
       }
-      // pick up to 4 unique random images
-      const count = Math.min(4, figs.length);
+      // pick up to 3 unique random images (reserve last slot for All photos tile)
+      const count = Math.min(3, figs.length);
       const pick = [];
       const used = new Set();
       while (pick.length < count) {
@@ -76,6 +76,7 @@
         const a = document.createElement('a');
         a.href = f.src;
         a.className = 'block';
+        a.dataset.type = 'img';
         a.setAttribute('data-caption', f.caption || '');
         a.setAttribute('data-pageurl', f.pageUrl || '#');
         const img = document.createElement('img');
@@ -88,6 +89,23 @@
         a.appendChild(img);
         frag.appendChild(a);
       });
+      // Add All photos tile
+      const allLink = document.createElement('a');
+      allLink.href = '/photos/';
+      allLink.className = 'block text-base-800';
+      const allBox = document.createElement('div');
+      allBox.style.aspectRatio = '1 / 1';
+      allBox.className = 'w-full h-full flex flex-col items-center justify-center gap-2 text-sm font-medium rounded bg-base-100 hover:bg-base-150';
+      const icon = document.createElement('img');
+      icon.src = '/assets/icons/img-stack.svg';
+      icon.alt = '';
+      icon.className = 'w-6 h-6';
+      const label = document.createElement('span');
+      label.textContent = 'All photos';
+      allBox.appendChild(icon);
+      allBox.appendChild(label);
+      allLink.appendChild(allBox);
+      frag.appendChild(allLink);
       wrap.appendChild(frag);
 
       // lightbox modal
@@ -115,8 +133,10 @@
       wrap.addEventListener('click', (e)=>{
         const a = e.target.closest('a');
         if(!a) return;
-        e.preventDefault();
-        open(a.href, a.getAttribute('data-caption')||'', a.getAttribute('data-pageurl')||'#');
+        if(a.dataset.type === 'img'){
+          e.preventDefault();
+          open(a.href, a.getAttribute('data-caption')||'', a.getAttribute('data-pageurl')||'#');
+        }
       });
     } catch(_){}
   })();

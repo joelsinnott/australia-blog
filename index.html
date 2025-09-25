@@ -3,7 +3,7 @@ layout: layout.html
 title: Joel in Australia
 ---
 <section class="space-y-4">
-  <div id="random-figs" class="not-prose grid grid-cols-4 gap-2"></div>
+  <div id="random-figs" class="not-prose grid grid-cols-2 xs:grid-cols-4 gap-2"></div>
 
   {% if collections.allTags and collections.allTags.size > 0 %}
   <div class="not-prose flex flex-wrap gap-2">
@@ -19,7 +19,7 @@ title: Joel in Australia
       <li class="py-3">
         <a class="block text-blue hover:text-blue-light font-medium" href="{{ post.url | url }}">{{ post.data.title }}</a>
         {% if post.date %}
-          <span class="text-sm text-base-600">– {{ post.date | date: "%d.%m.%Y" }}</span>
+          <span class="text-sm text-base-600"> {{ post.date | date: "%d.%m.%Y" }}</span>
         {% endif %}
       </li>
     {% endfor %}
@@ -39,8 +39,8 @@ title: Joel in Australia
       for (const f of all) {
         if (f && f.src && !seen.has(f.src)) { seen.add(f.src); figs.push(f); }
       }
-      // pick up to 4 unique random images
-      const count = Math.min(4, figs.length);
+      // pick up to 3 unique random images (reserve last slot for All photos tile)
+      const count = Math.min(3, figs.length);
       const pick = [];
       const used = new Set();
       while (pick.length < count) {
@@ -53,6 +53,7 @@ title: Joel in Australia
         const a = document.createElement('a');
         a.href = f.src;
         a.className = 'block';
+        a.dataset.type = 'img';
         a.setAttribute('data-caption', f.caption || '');
         a.setAttribute('data-pageurl', f.pageUrl || '#');
         const img = document.createElement('img');
@@ -65,6 +66,23 @@ title: Joel in Australia
         a.appendChild(img);
         frag.appendChild(a);
       });
+      // Add All photos tile
+      const allLink = document.createElement('a');
+      allLink.href = '{{ '/photos/' | url }}';
+      allLink.className = 'block text-base-800';
+      const allBox = document.createElement('div');
+      allBox.style.aspectRatio = '1 / 1';
+      allBox.className = 'w-full h-full flex flex-col items-center justify-center gap-2 text-sm font-medium rounded bg-base-100 hover:bg-base-150';
+      const icon = document.createElement('img');
+      icon.src = '{{ '/assets/icons/img-stack.svg' | url }}';
+      icon.alt = '';
+      icon.className = 'w-6 h-6';
+      const label = document.createElement('span');
+      label.textContent = 'All photos';
+      allBox.appendChild(icon);
+      allBox.appendChild(label);
+      allLink.appendChild(allBox);
+      frag.appendChild(allLink);
       wrap.appendChild(frag);
 
       // lightbox modal
@@ -92,8 +110,10 @@ title: Joel in Australia
       wrap.addEventListener('click', (e)=>{
         const a = e.target.closest('a');
         if(!a) return;
-        e.preventDefault();
-        open(a.href, a.getAttribute('data-caption')||'', a.getAttribute('data-pageurl')||'#');
+        if(a.dataset.type === 'img'){
+          e.preventDefault();
+          open(a.href, a.getAttribute('data-caption')||'', a.getAttribute('data-pageurl')||'#');
+        }
       });
     } catch(_){}
   })();
